@@ -12,6 +12,13 @@ abstract class TaskBase implements Task
     /**
      *
      *
+     * @var ParameterCollection
+     */
+    private $parameters;
+
+    /**
+     *
+     *
      * @var {string:mixed}
      */
     private $resultValues = array();
@@ -30,11 +37,11 @@ abstract class TaskBase implements Task
 
         $parameterDefinitionCollection = $parameterDefinitionCollectionBuilder->build();
 
-        $parameters = $parameterDefinitionCollection->bindValues($parameterValues);
+        $this->parameters = $parameterDefinitionCollection->bindValues($parameterValues);
 
         $this->resultValues = array();
 
-        $this->run($parameters);
+        $this->run();
 
         return new TaskResult($this->resultValues);
     }
@@ -53,10 +60,21 @@ abstract class TaskBase implements Task
     /**
      *
      *
-     * @param ParameterCollection $parameters
      * @return void
      */
-    abstract protected function run(ParameterCollection $parameters);
+    abstract protected function run();
+
+    /**
+     *
+     *
+     * @param string $key
+     * @return mixed
+     * @throws \DomainException
+     */
+    protected function getParameter($key)
+    {
+        return $this->parameters->get($key);
+    }
 
     /**
      *
